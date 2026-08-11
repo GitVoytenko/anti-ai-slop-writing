@@ -40,7 +40,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test \"test/**/*.test.js\"",
+    "test": "node --test",
     "lint:skill": "node scripts/validate-skill.js",
     "self-scan": "node scripts/self-scan.js",
     "check": "npm test && npm run lint:skill && node scripts/self-scan.js --check",
