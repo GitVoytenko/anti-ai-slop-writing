@@ -18,30 +18,48 @@ its own banned list, its own before/after pairs.
 
 ## What it looks like
 
-Before, and what the skill produces instead (synthetic examples, not a case study):
+Each pair below says the same thing twice. First the way a model writes it by
+default, then the way it writes with this skill loaded. No fact is added, and
+none is dropped: the content of both English versions is *onboarding took two
+weeks, now it takes three days*, and nothing else. Both examples are made up for
+this README.
+
+**English.** One fact, wrapped in 31 words, then stated in 11.
+
+> **Before.** In today's fast-moving digital landscape, our comprehensive
+> platform empowers teams to unlock the full potential of their data — it's not
+> just analytics, it's transformation. Onboarding now takes three days instead
+> of two weeks.
+>
+> **After.** Onboarding used to take two weeks. It takes three days now.
+
+Everything before the last sentence of the "before" is filler: it could sit
+under any product in any industry, unchanged. That is the tell, and it is what
+survives a "write it like a human" instruction.
+
+**Russian.** Same exercise. The fact is *four hours became three minutes*.
 
 > **Before.** В современном мире автоматизация играет ключевую роль. Стоит
-> отметить, что данный подход является наиболее эффективным решением. Наша
-> команда осуществляет внедрение решений.
+> отметить, что внедрение данного решения позволило существенно повысить
+> эффективность подготовки отчётности: время сократилось с четырёх часов до
+> трёх минут.
 >
-> **After.** Отчёт, который бухгалтер собирала по четыре часа, теперь готов за
-> три минуты. Мы этого не планировали: скрипт написали, чтобы перестать
-> ошибаться в реквизитах.
+> **After.** Раньше бухгалтер собирала отчёт четыре часа. Теперь три минуты.
 
-Twenty-one words of the "before", eight findings:
+Run the linter over that "before" and it names each problem, with a
+replacement where the list has one:
 
 ```
 $ npx aislop draft.md
-draft.md (21 words, ru)
+draft.md (27 words, ru)
   1:1    high   banned-phrase  banned phrase: "В современном мире"
-  1:1    high   uniform-sentence-length  3 sentences in a row of ~7 words
   1:41   high   banned-phrase  banned phrase: "ключевую роль"
   1:56   high   banned-phrase  banned phrase: "Стоит отметить, что"
-  1:76   medium banned-word    banned word: "данный" — use этот instead
-  1:90   medium banned-word    banned word: "является" — use это / есть instead
-  1:108  low    banned-word    banned word: "эффективный" — banned как филлер
-  1:143  medium banned-word    banned word: "осуществлять" — use делать instead
+  1:86   medium banned-word    banned word: "данный" — use этот instead
+  1:133  low    banned-word    banned word: "эффективный" — banned как филлер
 ```
+
+The "after" of either language returns nothing.
 
 ## Why a skill and not a prompt
 
