@@ -69,3 +69,16 @@ test('language is detected when not given', () => {
 test('an unknown language is rejected loudly', () => {
   assert.throws(() => detect('text', { lang: 'de' }), /unsupported language/);
 });
+
+test('adjective stems reach every case form', () => {
+  // «даний» declines to «даного»: cutting one letter would leave «дани» and miss it
+  assert.equal(rules('Впровадження даного рішення.', { lang: 'uk' }).includes('banned-word'), true);
+  assert.equal(rules('Даний сервіс працює.', { lang: 'uk' }).includes('banned-word'), true);
+});
+
+test('homographs of a banned stem are left alone', () => {
+  // «данные» is data, not the канцелярит «данный» — every technical text has it
+  assert.deepEqual(rules('Наши данные показывают рост.', { lang: 'ru' }), []);
+  assert.deepEqual(rules('По данным опроса, половина ушла.', { lang: 'ru' }), []);
+  assert.deepEqual(rules('Наші дані показують зростання.', { lang: 'uk' }), []);
+});

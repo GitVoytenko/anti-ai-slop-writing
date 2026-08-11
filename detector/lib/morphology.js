@@ -33,6 +33,10 @@ const INFINITIVE_ENDINGS = [
   'ити', 'ать', 'ять', 'еть', 'ить', 'ти',
 ];
 
+// Adjectives lose the whole ending, not one letter: «даний» declines to
+// «даного», which shares only «дан». Cutting a single letter would miss it.
+const ADJECTIVE_ENDINGS = ['ий', 'ій', 'ый', 'ой', 'ая', 'яя', 'ое', 'ее', 'ые', 'ие', 'ій'];
+
 /** Cyrillic stem + allowed ending, sized by how long the word is. */
 function inflect(word) {
   if (word.length <= 3) return anyApostrophe(escapeRegExp(word));
@@ -45,6 +49,12 @@ function inflect(word) {
   }
 
   if (word.length === 4) return anyApostrophe(escapeRegExp(word)) + `${CYRILLIC_ENDING}{0,3}`;
+
+  const adjective = ADJECTIVE_ENDINGS.find((end) => word.endsWith(end) && word.length - end.length >= 3);
+  if (adjective) {
+    return anyApostrophe(escapeRegExp(word.slice(0, -adjective.length))) + `${CYRILLIC_ENDING}{1,4}`;
+  }
+
   const cut = word.length >= 6 ? 2 : 1;
   return anyApostrophe(escapeRegExp(word.slice(0, -cut))) + `${CYRILLIC_ENDING}{0,4}`;
 }

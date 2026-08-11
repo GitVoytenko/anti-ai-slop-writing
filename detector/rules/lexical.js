@@ -8,6 +8,16 @@
 import { buildMatcher } from '../lib/morphology.js';
 import { splitSentences } from '../lib/tokenize.js';
 
+/**
+ * Forms that a stem legitimately produces but that mean something else.
+ * «данный» is канцелярит; «данные» is data, and every technical text has it.
+ * Stemming cannot separate the two, so the exceptions are listed by hand.
+ */
+const HOMOGRAPHS = new Set([
+  'данные', 'данных', 'данными', 'данным', 'данной', // data, not «этот»
+  'дані', 'даних', 'даними', 'даним',
+]);
+
 const compiled = new WeakMap();
 
 /** Compiling ~150 regexes per file adds up; keyed on the parsed banned list. */
@@ -53,6 +63,10 @@ export function lexical(text, { lang, banned }) {
     matcher.lastIndex = 0;
     let m;
     while ((m = matcher.exec(text)) !== null) {
+      if (HOMOGRAPHS.has(m[0].toLowerCase())) {
+        if (m[0].length === 0) matcher.lastIndex++;
+        continue;
+      }
       findings.push({
         rule: entry.kind === 'vocabulary' ? 'banned-word' : 'banned-phrase',
         severity: entry.severity,

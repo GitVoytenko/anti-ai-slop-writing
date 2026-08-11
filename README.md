@@ -18,11 +18,9 @@ banned list, its own before/after pairs.
 
 ## What it looks like
 
-Each pair below says the same thing twice. First the way a model writes it by
-default, then the way it writes with this skill loaded. No fact is added, and
-none is dropped: the content of both English versions is *onboarding took two
-weeks, now it takes three days*, and nothing else. Both examples are made up for
-this README.
+Each pair below says the same thing twice: first the way a model writes it by
+default, then the way it writes with this skill loaded. No fact is added and
+none is dropped. All three pairs are made up for this README.
 
 **English.** One fact, wrapped in 33 words, then stated in 11.
 
@@ -37,7 +35,8 @@ Everything before the last sentence of the "before" is filler: it could sit
 under any product in any industry, unchanged. That is the tell, and it is what
 survives a "write it like a human" instruction.
 
-**Russian.** Same exercise. The fact is *four hours became three minutes*.
+**Russian.** The fact is *four hours became three minutes*, and the "before"
+buries it in a subordinate clause at the very end, where nobody feels it.
 
 > **Before.** В современном мире автоматизация играет ключевую роль. Стоит
 > отметить, что внедрение данного решения позволило существенно повысить
@@ -46,8 +45,22 @@ survives a "write it like a human" instruction.
 >
 > **After.** Раньше бухгалтер собирала отчёт четыре часа. Теперь три минуты.
 
-Run the linter over that "before" and it names each problem, with a
-replacement where the list has one:
+**Ukrainian.** Two days of waiting for support, now four hours.
+
+> **Before.** У сучасному світі якісна підтримка відіграє ключову роль. Варто
+> зазначити, що впровадження даного рішення дозволило суттєво підвищити
+> ефективність опрацювання звернень: середній час відповіді скоротився з двох
+> діб до чотирьох годин.
+>
+> **After.** Раніше лист у підтримку висів дві доби. Тепер — чотири години.
+
+That Ukrainian "after" keeps its dash and the linter stays quiet, because тире
+is standing in for the verb the sentence drops. Required grammar. An English
+rule ported straight across would have flagged it and pushed the writer toward
+worse Ukrainian.
+
+Run the linter over any of the three "before" versions and it names each
+problem, with a replacement where the list has one:
 
 ```
 $ npx github:GitVoytenko/anti-ai-slop-writing draft.md
@@ -59,7 +72,7 @@ draft.md (27 words, ru)
   1:133  low    banned-word    banned word: "эффективный" — banned как филлер
 ```
 
-Both "after" versions come back clean.
+All three "after" versions come back clean.
 
 ## Why a skill and not a prompt
 
@@ -69,8 +82,8 @@ structural tell: the groups of three, the even sentence lengths, the tidy
 upbeat close, the paragraph that ends in a transition every single time.
 
 A skill carries what a prompt cannot: a banned list of 125 to 158 matchable
-entries per language, rewrite pairs to compare a draft against, and a dash rule that knows
-the difference between two alphabets. It also carries instructions for what
+entries per language, rewrite pairs to compare a draft against, and a dash rule
+that knows the difference between two alphabets. It also carries instructions for what
 **not** to flag, which matters more than it sounds, because an over-eager edit
 destroys the evidence that a person wrote the thing. Polish is not proof of a
 machine. Канцелярит inside a legal document is the correct register, and

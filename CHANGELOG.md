@@ -16,6 +16,10 @@ if they drift.
   study measures social media engagement, not AI writing markers. Replaced with
   the Carnegie Mellon 2025 study, linked.
 - Corrected the word count in the README demo, and the test count.
+- Adjective stems were cut by one letter, so «даний» never matched «даного».
+  They now lose the whole ending.
+- «данные» and «дані» were flagged as the канцелярит «даний»/«данный». Both mean
+  data; stemming cannot separate them, so the forms are listed as exceptions.
 
 - `references/en/banned.md` carried the same wrong citation; replaced there too,
   with the authors named.
@@ -30,6 +34,7 @@ if they drift.
   describes: the README counts table against the parsed lists, every relative
   link in README, CONTRIBUTING and docs, and any instruction to install `aislop`
   from npm.
+- A Ukrainian before/after pair in the README, written with the skill itself.
 
 ## [2.4.0] - 2026-08-11
 

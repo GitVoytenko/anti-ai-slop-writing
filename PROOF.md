@@ -10,12 +10,12 @@ Excluded by design: `references/*/banned.md` (a list of banned words) and
 `references/*/patterns.md` (each entry quotes the bad version before the good
 one). Linting those would measure the wrong thing.
 
-**7 findings across 5 files, 3352 words** — 0 high, 0 medium, 7 low.
+**7 findings across 5 files, 3405 words** — 0 high, 0 medium, 7 low.
 
 | File | Language | Words | High | Medium | Low |
 | --- | --- | --- | --- | --- | --- |
 | `CONTRIBUTING.md` | en | 597 | 0 | 0 | 1 |
-| `README.md` | en | 1041 | 0 | 0 | 1 |
+| `README.md` | en | 1094 | 0 | 0 | 1 |
 | `docs/adding-a-language.md` | en | 527 | 0 | 0 | 1 |
 | `docs/architecture.md` | en | 491 | 0 | 0 | 1 |
 | `docs/detector.md` | en | 696 | 0 | 0 | 3 |
