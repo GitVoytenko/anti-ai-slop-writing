@@ -179,7 +179,7 @@ repository's documentation. CI checks the count against the recorded budget, so
 prose that drifts fails the build like a broken test would.
 
 ```bash
-npm test           # 58 tests: detector rules, parser, CLI, fixtures
+npm test           # detector rules, parser, CLI, and the fixtures below
 npm run lint:skill # frontmatter, version agreement, every reference link
 npm run self-scan  # regenerate PROOF.md
 npm run check      # all three, what CI runs
@@ -201,7 +201,8 @@ entry format and the severity conventions, plus what a new language port needs.
 The English banned list draws on Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 (WikiProject AI Cleanup) and on [Carnegie Mellon's 2025 study](https://www.cmu.edu/dietrich/news/news-stories/2025/february/large-language-models-writing-text.html)
 of the lexical and grammatical features that separate model output from human
-writing. Each language module names its own sources at the top of the file.
+writing. The Russian and Ukrainian lists cite their own sources at the top of
+each `patterns.md`.
 
 The rewrite pairs for Russian and Ukrainian came out of editing real drafts. The
 human exemplars are public domain: Chekhov's 1886 letter to his brother for

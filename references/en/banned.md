@@ -1,6 +1,6 @@
 # English — module 3: banned vocabulary, phrases, openers
 
-Standalone module: edit independently of rules.md and patterns.md. Statistically flagged AI markers (Carnegie Mellon 2025, Wikipedia Signs of AI Writing, Buffer 52M post analysis). Never swap a banned word for its synonym — rewrite the thought.
+Standalone module: edit independently of rules.md and patterns.md. Statistically flagged AI markers (Carnegie Mellon 2025 — Reinhart et al., PNAS, on the lexical and grammatical features separating model output from human writing; Wikipedia, Signs of AI Writing). Never swap a banned word for its synonym — rewrite the thought.
 
 ## Banned Vocabulary
 

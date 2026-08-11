@@ -48,17 +48,18 @@ const { lang, issues, stats } = detect(text, { lang: 'ru', severity: 'medium' })
 | `banned-phrase` | phrase entries, with `X` / `[noun]` treated as slots |
 | `banned-opener` | opener entries, **only** at the start of a sentence |
 
-Severity comes from the list itself. A bare entry is `high`, an entry carrying
-an arrow replacement (`данный (→ этот)`) is `medium`, and an entry with a
-condition the tool cannot verify (`landscape (figurative)`, `ключевой (как
-филлер)`) is `low`.
+Severity comes from the list itself. A bare entry is `high`. An entry is
+`medium` when it carries a replacement (`данный (→ этот)`) or narrows the word
+to one exact form (`эпоха («в эпоху»)`), and `low` when it states a condition
+the tool cannot check, as `landscape (figurative)` and `ключевой (как филлер)`
+both do.
 
 ### Structural
 
 | Rule | Threshold |
 | --- | --- |
 | `uniform-sentence-length` | 3+ consecutive sentences within 2 words of each other |
-| `flat-rhythm` | standard deviation under 40% of mean length, 60+ words |
+| `flat-rhythm` | standard deviation under 40% of mean length, over 60 words and 6 sentences |
 | `parataxis` | 4+ consecutive sentences of 8 words or fewer |
 | `rule-of-three` | `A, B and C` inside one sentence, subordinate clauses excluded |
 | `role-opener` | `As a [role], I…` / «Как [роль], я…» / «Як [роль], я…» |
@@ -110,6 +111,11 @@ catches «данный → данного → данным» and «здійсн�
 irregular forms, and a very short banned word can, in principle, reach a word
 nobody meant to ban. The fixtures in `test/fixtures/human/` exist to catch that
 class of mistake before it ships.
+
+**Slots per entry are capped at two.** Each `X` or `[noun]` in a phrase compiles
+to a lazy quantifier, and a chain of them backtracks badly enough to stall a CI
+run on a crafted entry. Slots past the second match a single word instead. The
+shipped lists never use more than two, so the cap costs nothing today.
 
 **Conditions are unverifiable by design.** «Ландшафт» is banned figuratively and
 fine for terrain. The detector reports it as `low` and lets you decide. Running

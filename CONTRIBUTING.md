@@ -74,7 +74,7 @@ Severity conventions:
 | Severity | Meaning |
 | --- | --- |
 | `high` | unconditional. A banned phrase, a credential opener, three same-length sentences in a row. |
-| `medium` | carries a replacement, or a condition the tool mostly trusts. |
+| `medium` | carries a suggested replacement, or narrows the word to the exact banned form. |
 | `low` | banned in one sense only, and no regex can tell which sense this is. |
 
 ## Adding a language
@@ -96,6 +96,13 @@ documentation against the budget in [PROOF.md](PROOF.md). If you edited README
 or docs and the self-scan went over budget, fix the prose rather than raising
 the number. Raising it deliberately is fine when the added text genuinely earns
 it, but the commit should say why.
+
+The validator also keeps the documentation honest about itself. It compares the
+counts table in README against the reference files, so adding a banned entry
+without running `npm run stats` fails the build. It resolves every relative link
+in README, CONTRIBUTING and docs. And it rejects any line telling a reader to
+install `aislop` through npm. That name belongs to an unrelated package, and
+this project installs from the repository.
 
 Update `CHANGELOG.md` under `## [Unreleased]`. Version numbers live in three
 places (`SKILL.md`, `package.json`, `CHANGELOG.md`) and the validator fails if

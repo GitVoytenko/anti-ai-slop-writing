@@ -112,6 +112,82 @@ for (const lang of LANGUAGES) {
   else note(`${lang}: ${entries.length} banned entries`);
 }
 
+// 6. numbers quoted in the documentation still match the files
+const counts = {};
+for (const lang of LANGUAGES) {
+  const path = join(ROOT, 'references', lang, 'banned.md');
+  if (!existsSync(path)) continue;
+  const { entries } = parseBanned(path, lang);
+  const patterns = join(ROOT, 'references', lang, 'patterns.md');
+  counts[lang] = {
+    vocabulary: entries.filter((e) => e.kind === 'vocabulary').length,
+    phrase: entries.filter((e) => e.kind === 'phrase').length,
+    opener: entries.filter((e) => e.kind === 'opener').length,
+    total: entries.length,
+    rewrites: existsSync(patterns)
+      ? (readFileSync(patterns, 'utf8').match(/^###\s+\d+\./gm) ?? []).length
+      : 0,
+  };
+}
+
+const readmePath = join(ROOT, 'README.md');
+if (existsSync(readmePath)) {
+  const readme = readFileSync(readmePath, 'utf8');
+  const NAMES = { English: 'en', Russian: 'ru', Ukrainian: 'uk' };
+
+  for (const [name, lang] of Object.entries(NAMES)) {
+    const row = readme.match(new RegExp(`^\\|\\s*${name}\\s*\\|([^\\n]*)\\|\\s*$`, 'm'));
+    if (!row) {
+      fail(`README has no counts row for ${name}`);
+      continue;
+    }
+    const cells = row[1].split('|').map((c) => Number(c.trim()));
+    const expected = counts[lang];
+    if (!expected) continue;
+    const actual = [expected.vocabulary, expected.phrase, expected.opener, expected.rewrites];
+    if (cells.length !== actual.length || cells.some((c, i) => c !== actual[i])) {
+      fail(`README row for ${name} says ${cells.join('/')}, files say ${actual.join('/')} — run npm run stats`);
+    }
+  }
+
+  const range = readme.match(/(\d+) to (\d+) matchable\s+entries per language/);
+  if (range) {
+    const totals = Object.values(counts).map((c) => c.total);
+    const low = Math.min(...totals);
+    const high = Math.max(...totals);
+    if (Number(range[1]) !== low || Number(range[2]) !== high) {
+      fail(`README claims ${range[1]}–${range[2]} entries per language, files hold ${low}–${high}`);
+    }
+  } else {
+    fail('README no longer states the per-language entry range in the expected wording');
+  }
+  note('README counts match the reference files');
+}
+
+// 7. relative links resolve in every document, and nothing points at the npm
+// package `aislop`, which belongs to someone else
+const DOCS = ['README.md', 'CONTRIBUTING.md', 'CHANGELOG.md', 'docs/architecture.md', 'docs/detector.md', 'docs/adding-a-language.md'];
+for (const doc of DOCS) {
+  const path = join(ROOT, doc);
+  if (!existsSync(path)) continue;
+  const text = readFileSync(path, 'utf8');
+  // links inside code blocks are illustrations, not links to follow
+  const prose = text.replace(/```[\s\S]*?```/g, '');
+
+  for (const [, href] of prose.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
+    if (/^https?:|^#/.test(href)) continue;
+    const relative = href.split('#')[0];
+    const target = doc.includes('/') ? join(ROOT, doc, '..', relative) : join(ROOT, relative);
+    if (!existsSync(target)) fail(`${doc} links to a missing file: ${href}`);
+  }
+
+  // CHANGELOG records the mistake of pointing at that package, so it is allowed
+  // to name it; anything instructional is not
+  if (doc !== 'CHANGELOG.md' && /\bnp[xm]\s+(?:i\s+|install\s+)?aislop\b/.test(text)) {
+    fail(`${doc} tells the reader to install "aislop" from npm — that name belongs to an unrelated package`);
+  }
+}
+
 for (const line of notes) console.log(`  ${line}`);
 if (problems.length === 0) {
   console.log('validate-skill: ok');

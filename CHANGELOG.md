@@ -17,9 +17,19 @@ if they drift.
   the Carnegie Mellon 2025 study, linked.
 - Corrected the word count in the README demo, and the test count.
 
+- `references/en/banned.md` carried the same wrong citation; replaced there too,
+  with the authors named.
+
 ### Changed
 
 - Placeholder slots per banned entry are capped, bounding regex matching cost.
+
+### Added
+
+- `validate-skill.js` now checks the documentation against the files it
+  describes: the README counts table against the parsed lists, every relative
+  link in README, CONTRIBUTING and docs, and any instruction to install `aislop`
+  from npm.
 
 ## [2.4.0] - 2026-08-11
 
