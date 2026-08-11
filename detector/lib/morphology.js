@@ -15,6 +15,7 @@ const LEFT = '(?<![\\p{L}\\p{N}_])';
 const RIGHT = '(?![\\p{L}\\p{N}_])';
 
 const PLACEHOLDER = '[^\\n]{1,30}?';
+const MAX_SLOTS = 2;
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -63,6 +64,7 @@ function isCyrillic(word) {
 export function buildMatcher(phrase, { lang, morph = true, anchored = false } = {}) {
   const tokens = phrase.trim().split(/(\s+)/).filter((t) => t.length > 0);
   const parts = [];
+  let slots = 0;
 
   for (const token of tokens) {
     if (/^\s+$/.test(token)) {
@@ -71,14 +73,19 @@ export function buildMatcher(phrase, { lang, morph = true, anchored = false } = 
       parts.push('[,;:]?\\s+');
       continue;
     }
-    // [adjective], [X] — a slot the writer fills in
-    if (/^\[[^\]]+\][.,!?…]*$/.test(token)) {
-      parts.push(PLACEHOLDER);
-      continue;
-    }
-    // bare X / Y used as slots in the phrase lists
-    if (/^[XY][.,!?…]*$/.test(token)) {
-      parts.push(PLACEHOLDER);
+    // [adjective], [X] — a slot the writer fills in; bare X / Y do the same job.
+    // Slots are capped: each one is a lazy quantifier, and a crafted entry with
+    // a long chain of them would make the regex crawl. The shipped lists top out
+    // at two ("In today's [adjective] [noun]"), so the cap costs nothing real.
+    if (/^\[[^\]]+\][.,!?…]*$/.test(token) || /^[XY][.,!?…]*$/.test(token)) {
+      if (slots < MAX_SLOTS) {
+        slots++;
+        parts.push(PLACEHOLDER);
+      } else {
+        // beyond the cap a slot matches a single word, which cannot backtrack
+        // across spaces the way the lazy version can
+        parts.push('\\S{1,30}');
+      }
       continue;
     }
 

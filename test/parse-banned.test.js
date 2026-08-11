@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { parseBanned } from '../detector/lib/parse-banned.js';
+import { buildMatcher } from '../detector/lib/morphology.js';
 
 const REFERENCES = new URL('../references/', import.meta.url);
 
@@ -87,4 +88,16 @@ test('every shipped language file parses into all three kinds', () => {
     }
     assert.equal(entries.every((e) => e.pattern.length >= 3), true);
   }
+});
+
+test('a crafted entry cannot make the regex crawl', () => {
+  // slots are lazy quantifiers; a long chain of them would backtrack badly, so
+  // buildMatcher caps how many a single entry gets
+  const file = fixture('# t\n\n## Banned Phrases\n\n- "X X X X X X X X end"\n');
+  const { entries } = parseBanned(file, 'en');
+  const matcher = buildMatcher(entries[0].pattern, { lang: 'en', morph: false });
+
+  const started = Date.now();
+  matcher.test('word '.repeat(400) + 'and that is all');
+  assert.equal(Date.now() - started < 500, true, 'matching took too long');
 });
