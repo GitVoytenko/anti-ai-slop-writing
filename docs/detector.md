@@ -1,12 +1,16 @@
 # The detector
 
-Zero dependencies, Node 18 or newer, no build step.
+Zero dependencies, Node 18 or newer, no build step. The package is not published
+on npm, so it comes from the repository: `npm install
+GitVoytenko/anti-ai-slop-writing`, or clone and run `detector/cli.js` directly.
 
 ```bash
 aislop draft.md
 aislop posts/ --lang ru --severity medium
 cat draft.txt | aislop -
 aislop docs/ --format json --max 0
+
+npx github:GitVoytenko/anti-ai-slop-writing draft.md   # without installing
 ```
 
 | Option | Effect |

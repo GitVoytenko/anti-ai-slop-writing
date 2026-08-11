@@ -8,6 +8,19 @@ if they drift.
 
 ## [Unreleased]
 
+### Fixed
+
+- Documentation pointed at `npx aislop`, which resolves to an unrelated package
+  on npm. Install and run instructions now use the repository.
+- Credits attributed the English list partly to Buffer's 52M-post analysis; that
+  study measures social media engagement, not AI writing markers. Replaced with
+  the Carnegie Mellon 2025 study, linked.
+- Corrected the word count in the README demo, and the test count.
+
+### Changed
+
+- Placeholder slots per banned entry are capped, bounding regex matching cost.
+
 ## [2.4.0] - 2026-08-11
 
 First public release. The skill had been in private use before this; the version

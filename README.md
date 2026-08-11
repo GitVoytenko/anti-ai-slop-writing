@@ -9,12 +9,12 @@ learned to recognise as machine-written, in **English, Russian and Ukrainian**.
 It ships with a linter that reads the same word lists the model reads, so you
 can check any draft from the command line.
 
-Most anti-AI-writing tooling is English-first, and the Russian and Ukrainian
-ports of it usually translate an English list. That fails on the first rule.
-The em dash is the top English tell, while in Russian and Ukrainian тире is
-required grammar: «Киев — столица» is simply correct, and a linter that flags it
-teaches the writer to break the language. Each language here has its own rules,
-its own banned list, its own before/after pairs.
+Anti-AI-writing tooling is mostly English-first, and translating an English
+list into Russian or Ukrainian breaks on the very first rule. The em dash is the
+top English tell, while тире is required grammar in both Slavic languages:
+«Киев — столица» is simply correct, and a linter that flags it teaches the
+writer to break the language. Each language here gets its own rules, its own
+banned list, its own before/after pairs.
 
 ## What it looks like
 
@@ -24,7 +24,7 @@ none is dropped: the content of both English versions is *onboarding took two
 weeks, now it takes three days*, and nothing else. Both examples are made up for
 this README.
 
-**English.** One fact, wrapped in 31 words, then stated in 11.
+**English.** One fact, wrapped in 33 words, then stated in 11.
 
 > **Before.** In today's fast-moving digital landscape, our comprehensive
 > platform empowers teams to unlock the full potential of their data — it's not
@@ -50,7 +50,7 @@ Run the linter over that "before" and it names each problem, with a
 replacement where the list has one:
 
 ```
-$ npx aislop draft.md
+$ npx github:GitVoytenko/anti-ai-slop-writing draft.md
 draft.md (27 words, ru)
   1:1    high   banned-phrase  banned phrase: "В современном мире"
   1:41   high   banned-phrase  banned phrase: "ключевую роль"
@@ -59,7 +59,7 @@ draft.md (27 words, ru)
   1:133  low    banned-word    banned word: "эффективный" — banned как филлер
 ```
 
-The "after" of either language returns nothing.
+Both "after" versions come back clean.
 
 ## Why a skill and not a prompt
 
@@ -68,8 +68,8 @@ words the model associates with the phrase *AI patterns*. It keeps every
 structural tell: the groups of three, the even sentence lengths, the tidy
 upbeat close, the paragraph that ends in a transition every single time.
 
-A skill carries what a prompt cannot: banned lists of a few hundred entries per
-language, rewrite pairs to compare a draft against, and a dash rule that knows
+A skill carries what a prompt cannot: a banned list of 125 to 158 matchable
+entries per language, rewrite pairs to compare a draft against, and a dash rule that knows
 the difference between two alphabets. It also carries instructions for what
 **not** to flag, which matters more than it sounds, because an over-eager edit
 destroys the evidence that a person wrote the thing. Polish is not proof of a
@@ -93,13 +93,14 @@ git clone https://github.com/GitVoytenko/anti-ai-slop-writing.git ~/.claude/skil
 directory at the clone.
 
 **Any other agent.** `SKILL.md` is plain markdown with relative links. Paste it
-into a system prompt and keep `references/` alongside it, or inline the three
-files for the language you need.
+into a system prompt and keep `references/` alongside it, or inline the four
+files one language uses: `core/craft.md` plus that language's three modules.
 
-**The linter alone**, without the skill:
+**The linter alone**, without the skill. It is not on npm, so it runs from the
+repository:
 
 ```bash
-npx aislop draft.md
+npx github:GitVoytenko/anti-ai-slop-writing draft.md
 ```
 
 ## How the skill is organised
@@ -142,6 +143,8 @@ runtime, which means the word lists have exactly one home: add a word to the
 markdown and the linter picks it up on the next run.
 
 ```bash
+npm install GitVoytenko/anti-ai-slop-writing   # or clone the repo and run npm link
+
 aislop draft.md                      # auto-detects the language
 aislop posts/ --lang ru --severity medium
 cat draft.txt | aislop -
@@ -158,7 +161,7 @@ const { issues, stats } = detect(text, { lang: 'uk' });
 
 Findings come in three severities. `high` is unconditional: a banned phrase, a
 credential opener, three same-length sentences in a row. `medium` carries a
-suggested replacement or a condition the tool mostly trusts. `low` marks a word
+suggested replacement, or narrows a word to the exact form that is banned. `low` marks a word
 that is banned only in one sense: `ландшафт` is fine for terrain and slop for
 `информационный ландшафт`, and no regular expression can tell those apart.
 
@@ -176,7 +179,7 @@ repository's documentation. CI checks the count against the recorded budget, so
 prose that drifts fails the build like a broken test would.
 
 ```bash
-npm test           # 57 tests: detector rules, parser, CLI, fixtures
+npm test           # 58 tests: detector rules, parser, CLI, fixtures
 npm run lint:skill # frontmatter, version agreement, every reference link
 npm run self-scan  # regenerate PROOF.md
 npm run check      # all three, what CI runs
@@ -189,18 +192,19 @@ fixtures fail loudly the day a rule starts eating real writing.
 
 ## Contributing
 
-Word lists are never finished, and the Russian and Ukrainian ones grow with use.
-Adding an entry is a one-line change to a markdown file, and the linter picks it
-up without touching any code. [CONTRIBUTING.md](CONTRIBUTING.md) covers the
+Word lists are never finished. Adding an entry is a one-line change to a
+markdown file, and the linter picks it up without touching any code. [CONTRIBUTING.md](CONTRIBUTING.md) covers the
 entry format and the severity conventions, plus what a new language port needs.
 
 ## Credits
 
 The English banned list draws on Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
-(WikiProject AI Cleanup), Carnegie Mellon's 2025 work on statistically flagged
-markers, and Buffer's analysis of 52M posts. The rewrite pairs for Russian and
-Ukrainian came out of editing real drafts. The human exemplars are public
-domain: Chekhov's 1886 letter to his brother for Russian, a 1907 letter of Lesya
-Ukrainka for Ukrainian.
+(WikiProject AI Cleanup) and on [Carnegie Mellon's 2025 study](https://www.cmu.edu/dietrich/news/news-stories/2025/february/large-language-models-writing-text.html)
+of the lexical and grammatical features that separate model output from human
+writing. Each language module names its own sources at the top of the file.
+
+The rewrite pairs for Russian and Ukrainian came out of editing real drafts. The
+human exemplars are public domain: Chekhov's 1886 letter to his brother for
+Russian, a 1907 letter of Lesya Ukrainka for Ukrainian.
 
 MIT licensed. See [LICENSE](LICENSE).
