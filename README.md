@@ -1,0 +1,188 @@
+# Anti-AI-Slop Writing
+
+[![CI](https://github.com/GitVoytenko/anti-ai-slop-writing/actions/workflows/ci.yml/badge.svg)](https://github.com/GitVoytenko/anti-ai-slop-writing/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](package.json)
+
+A writing skill for Claude that produces text without the patterns people have
+learned to recognise as machine-written, in **English, Russian and Ukrainian**.
+It ships with a linter that reads the same word lists the model reads, so you
+can check any draft from the command line.
+
+Most anti-AI-writing tooling is English-first, and the Russian and Ukrainian
+ports of it usually translate an English list. That fails on the first rule.
+The em dash is the top English tell, while in Russian and Ukrainian тире is
+required grammar: «Киев — столица» is simply correct, and a linter that flags it
+teaches the writer to break the language. Each language here has its own rules,
+its own banned list, its own before/after pairs.
+
+## What it looks like
+
+Before, and what the skill produces instead (synthetic examples, not a case study):
+
+> **Before.** В современном мире автоматизация играет ключевую роль. Стоит
+> отметить, что данный подход является наиболее эффективным решением. Наша
+> команда осуществляет внедрение решений.
+>
+> **After.** Отчёт, который бухгалтер собирала по четыре часа, теперь готов за
+> три минуты. Мы этого не планировали: скрипт написали, чтобы перестать
+> ошибаться в реквизитах.
+
+Twenty-one words of the "before", eight findings:
+
+```
+$ npx aislop draft.md
+draft.md (21 words, ru)
+  1:1    high   banned-phrase  banned phrase: "В современном мире"
+  1:1    high   uniform-sentence-length  3 sentences in a row of ~7 words
+  1:41   high   banned-phrase  banned phrase: "ключевую роль"
+  1:56   high   banned-phrase  banned phrase: "Стоит отметить, что"
+  1:76   medium banned-word    banned word: "данный" — use этот instead
+  1:90   medium banned-word    banned word: "является" — use это / есть instead
+  1:108  low    banned-word    banned word: "эффективный" — banned как филлер
+  1:143  medium banned-word    banned word: "осуществлять" — use делать instead
+```
+
+## Why a skill and not a prompt
+
+"Write like a human, avoid AI patterns" gets you an answer that avoids the
+words the model associates with the phrase *AI patterns*. It keeps every
+structural tell: the groups of three, the even sentence lengths, the tidy
+upbeat close, the paragraph that ends in a transition every single time.
+
+A skill carries what a prompt cannot: banned lists of a few hundred entries per
+language, rewrite pairs to compare a draft against, and a dash rule that knows
+the difference between two alphabets. It also carries instructions for what
+**not** to flag, which matters more than it sounds, because an over-eager edit
+destroys the evidence that a person wrote the thing. Polish is not proof of a
+machine. Канцелярит inside a legal document is the correct register, and
+rewriting it there makes the document worse.
+
+One more rule most style guides skip: never invent a fact to sound specific. A
+fabricated number reads more human than an honest vague one, and it is still a
+defect.
+
+## Install
+
+**Claude Code.** Clone into your skills directory and Claude picks it up in any
+project:
+
+```bash
+git clone https://github.com/GitVoytenko/anti-ai-slop-writing.git ~/.claude/skills/anti-ai-slop-writing
+```
+
+**Claude Desktop / Cowork.** Upload the folder as a skill, or point your skills
+directory at the clone.
+
+**Any other agent.** `SKILL.md` is plain markdown with relative links. Paste it
+into a system prompt and keep `references/` alongside it, or inline the three
+files for the language you need.
+
+**The linter alone**, without the skill:
+
+```bash
+npx aislop draft.md
+```
+
+## How the skill is organised
+
+`SKILL.md` holds what applies everywhere: structural rules, punctuation
+budgets, the no-invented-facts rule, the draft → audit → final loop. Everything
+language-specific lives in a module the model loads on demand.
+
+```
+SKILL.md
+references/
+  core/craft.md          second-order craft: pacing, ordering, endings, revision discipline
+  en/  ru/  uk/
+    rules.md             grammar-level tells; overrides SKILL.md on conflict
+    banned.md            vocabulary, phrases, openers
+    patterns.md          before/after rewrites + a public-domain human exemplar
+```
+
+Every module is self-contained. Edit one without touching the others; delete
+one and the skill keeps working with what remains. Adding a fourth language
+means creating `references/<lang>/` with the same three files and adding one
+routing line to `SKILL.md`. See [docs/adding-a-language.md](docs/adding-a-language.md).
+
+Current contents, counted by `npm run stats`:
+
+| Language | Vocabulary | Phrases | Openers | Rewrite pairs |
+| --- | --- | --- | --- | --- |
+| English | 70 | 39 | 16 | 5 |
+| Russian | 75 | 39 | 18 | 10 |
+| Ukrainian | 101 | 40 | 17 | 10 |
+
+The Ukrainian list is the longest because it carries a category the others do
+not need: calques from Russian and from English. Machine-translated Ukrainian
+reads as machine-written even when every word is clean.
+
+## The detector
+
+Zero dependencies, Node 18 or newer. It parses `references/<lang>/banned.md` at
+runtime, which means the word lists have exactly one home: add a word to the
+markdown and the linter picks it up on the next run.
+
+```bash
+aislop draft.md                      # auto-detects the language
+aislop posts/ --lang ru --severity medium
+cat draft.txt | aislop -
+aislop README.md --max 0             # exit 1 on any finding, for CI or a git hook
+```
+
+```js
+import { detect } from 'anti-ai-slop-writing';
+
+const { issues, stats } = detect(text, { lang: 'uk' });
+// issues: [{ rule, severity, line, column, excerpt, message, fix }]
+// stats:  { words, issues, per1000, byRule, bySeverity }
+```
+
+Findings come in three severities. `high` is unconditional: a banned phrase, a
+credential opener, three same-length sentences in a row. `medium` carries a
+suggested replacement or a condition the tool mostly trusts. `low` marks a word
+that is banned only in one sense: `ландшафт` is fine for terrain and slop for
+`информационный ландшафт`, and no regular expression can tell those apart.
+
+What it will not do: judge whether a scene beats its summary, whether the
+painful number sits in a main clause, whether the piece ends once or three
+times. Those rules are in `core/craft.md`, they matter more than the word
+lists, and they need a reader. The linter is a floor, not a verdict.
+
+[docs/detector.md](docs/detector.md) lists every rule and its known limits.
+
+## It passes its own linter
+
+[PROOF.md](PROOF.md) is generated by running the detector over this
+repository's documentation. CI checks the count against the recorded budget, so
+prose that drifts fails the build like a broken test would.
+
+```bash
+npm test           # 57 tests: detector rules, parser, CLI, fixtures
+npm run lint:skill # frontmatter, version agreement, every reference link
+npm run self-scan  # regenerate PROOF.md
+npm run check      # all three, what CI runs
+```
+
+The test fixtures come in pairs. Three deliberately slop-ridden files that the
+detector has to catch, and three ordinary human texts it has to leave alone. A
+style linter that only proves it can find slop is half a linter: the human
+fixtures fail loudly the day a rule starts eating real writing.
+
+## Contributing
+
+Word lists are never finished, and the Russian and Ukrainian ones grow with use.
+Adding an entry is a one-line change to a markdown file, and the linter picks it
+up without touching any code. [CONTRIBUTING.md](CONTRIBUTING.md) covers the
+entry format and the severity conventions, plus what a new language port needs.
+
+## Credits
+
+The English banned list draws on Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
+(WikiProject AI Cleanup), Carnegie Mellon's 2025 work on statistically flagged
+markers, and Buffer's analysis of 52M posts. The rewrite pairs for Russian and
+Ukrainian came out of editing real drafts. The human exemplars are public
+domain: Chekhov's 1886 letter to his brother for Russian, a 1907 letter of Lesya
+Ukrainka for Ukrainian.
+
+MIT licensed. See [LICENSE](LICENSE).
