@@ -77,7 +77,7 @@ These patterns are how readers spot AI text even when vocabulary is clean.
 
 **Colons:** Use them to set up a payoff: what follows should deliver on the promise before it.
 
-**Dashes:** Never type the em dash (—). Use the en dash (–) instead in every language: same grammatical role, easier to reach on a keyboard. In English a dash is still the #1 AI tell no matter which glyph it is (max one per 500 words). In Russian and Ukrainian тире is required grammar and stays free in grammatical positions, written as – rather than —; the limit applies only to rhetorical insert-dashes and the «X – это не просто Y» / «X – це не просто Y» construction.
+**Dashes:** Never type the em dash (—). Use the en dash (–) instead in every language: same grammatical role, easier to reach on a keyboard. Exception: official, government, or legal-register documents keep the traditional em dash, the same exception as the канцелярит rule below. In English a dash is still the #1 AI tell no matter which glyph it is (max one per 500 words). In Russian and Ukrainian тире is required grammar and stays free in grammatical positions, written as – rather than — outside that exception; the limit applies only to rhetorical insert-dashes and the «X – это не просто Y» / «X – це не просто Y» construction.
 
 ## What To Do Instead (all languages)
 
@@ -142,7 +142,7 @@ For Ukrainian specifically: modern natural Ukrainian, not translated-from-Russia
 A clean human writer can hit several patterns above without any AI involvement. Before gutting a sentence, sanity-check. These are NOT reliable tells on their own:
 
 - **Perfect grammar and polish.** Professionals get edited. Polish ≠ AI.
-- **Dashes in RU/UK text.** Тире is required grammar; heavy dash use is normal for human editors in these languages. Only the rhetorical pause-dash pattern counts, and only in clusters.
+- **Dashes in RU/UK text.** Тире is required grammar; heavy dash use is normal for human editors in these languages. Only the rhetorical pause-dash pattern counts, and only in clusters. In official/legal-register text the em dash is the correct glyph, not a tell.
 - **Канцелярит in legal, official, or government documents.** That's the correct register there – leave it.
 - **Formal or academic vocabulary.** AI overuses SPECIFIC words (see the lists), not all bookish words.
 - **One transition word, one short emphatic sentence, one «однако».** Tells count in clusters, not in isolation.

@@ -35,6 +35,9 @@ if they drift.
   changed; the two banned-phrase citations that the detector parses literally
   (`references/{ru,uk,en}/banned.md`) keep the em dash, since they must still
   match that construction wherever it shows up in someone else's draft.
+  Official, government, and legal-register documents are exempt from this
+  switch, same as the existing канцелярит exception: they keep the
+  traditional em dash.
 
 ### Added
 
