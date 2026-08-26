@@ -12,8 +12,10 @@ can check any draft from the command line.
 Anti-AI-writing tooling is mostly English-first, and translating an English
 list into Russian or Ukrainian breaks on the very first rule. The em dash is the
 top English tell, while тире is required grammar in both Slavic languages:
-«Киев — столица» is simply correct, and a linter that flags it teaches the
-writer to break the language. Each language here gets its own rules, its own
+«Киев – столица» is simply correct, and a linter that flags it teaches the
+writer to break the language. (This skill writes that dash as the en dash –
+rather than the traditional em dash, because it is the one most people can
+actually type.) Each language here gets its own rules, its own
 banned list, its own before/after pairs.
 
 ## What it looks like
@@ -25,7 +27,7 @@ none is dropped. All three pairs are made up for this README.
 **English.** One fact, wrapped in 33 words, then stated in 11.
 
 > **Before.** In today's fast-moving digital landscape, our comprehensive
-> platform empowers teams to unlock the full potential of their data — it's not
+> platform empowers teams to unlock the full potential of their data – it's not
 > just analytics, it's transformation. Onboarding now takes three days instead
 > of two weeks.
 >
@@ -52,7 +54,7 @@ buries it in a subordinate clause at the very end, where nobody feels it.
 > ефективність опрацювання звернень: середній час відповіді скоротився з двох
 > діб до чотирьох годин.
 >
-> **After.** Раніше лист у підтримку висів дві доби. Тепер — чотири години.
+> **After.** Раніше лист у підтримку висів дві доби. Тепер – чотири години.
 
 That Ukrainian "after" keeps its dash and the linter stays quiet, because тире
 is standing in for the verb the sentence drops. Required grammar. An English
@@ -68,8 +70,8 @@ draft.md (27 words, ru)
   1:1    high   banned-phrase  banned phrase: "В современном мире"
   1:41   high   banned-phrase  banned phrase: "ключевую роль"
   1:56   high   banned-phrase  banned phrase: "Стоит отметить, что"
-  1:86   medium banned-word    banned word: "данный" — use этот instead
-  1:133  low    banned-word    banned word: "эффективный" — banned как филлер
+  1:86   medium banned-word    banned word: "данный" – use этот instead
+  1:133  low    banned-word    banned word: "эффективный" – banned как филлер
 ```
 
 All three "after" versions come back clean.

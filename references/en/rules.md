@@ -1,8 +1,8 @@
-# English — module 1: language-specific rules
+# English – module 1: language-specific rules
 
 Standalone module: edit independently of banned.md and patterns.md. These rules override SKILL.md general rules where they conflict.
 
-**Em dashes:** Maximum ONE per 500 words. The single most cited AI tell in English. Use commas, semicolons, colons, parentheses, or new sentences instead.
+**Dashes:** Never the em dash (—) – use the en dash (–) instead, with spaces around it, and only up to ONE per 500 words. The em dash is the single most cited AI tell in English, and swapping the glyph does not raise the budget. Prefer commas, semicolons, colons, parentheses, or a new sentence over reaching for a dash at all.
 
 **Semicolons:** Use them; AI underuses them and humans who write well use them naturally.
 

@@ -27,6 +27,14 @@ if they drift.
 ### Changed
 
 - Placeholder slots per banned entry are capped, bounding regex matching cost.
+- House style now calls for the en dash (–) instead of the em dash (—) in every
+  language, including for the required grammatical тире in Russian and
+  Ukrainian: same role, easier to type. Updated in `SKILL.md`, the three
+  `rules.md` modules, and the surrounding documentation. The `em-dash` and
+  `rhetorical-dash` detector rules already counted either glyph, so no code
+  changed; the two banned-phrase citations that the detector parses literally
+  (`references/{ru,uk,en}/banned.md`) keep the em dash, since they must still
+  match that construction wherever it shows up in someone else's draft.
 
 ### Added
 

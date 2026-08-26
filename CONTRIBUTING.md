@@ -9,7 +9,7 @@ pull request this repository can get, and it is a one-line change.
 ```bash
 git clone https://github.com/GitVoytenko/anti-ai-slop-writing.git
 cd anti-ai-slop-writing
-npm run check    # tests, skill validation, self-scan — no install step, no dependencies
+npm run check    # tests, skill validation, self-scan – no install step, no dependencies
 ```
 
 Node 18 or newer. There is nothing to `npm install`: the detector uses only the
@@ -57,7 +57,7 @@ npm test
 
 `references/<lang>/patterns.md` holds before/after pairs. Copy the existing
 heading format, keep the "after" concrete, and do not invent a fact to make the
-rewrite look better — a fabricated specific is the defect this skill exists to
+rewrite look better – a fabricated specific is the defect this skill exists to
 prevent.
 
 ## Changing the detector

@@ -29,7 +29,7 @@ required grammar there, and a rule copied across would teach the model to write
 broken Russian.
 
 `core/craft.md` is the odd one out: language-independent, but too specific for
-`SKILL.md`. It holds second-order craft — one markedly short sentence per block,
+`SKILL.md`. It holds second-order craft – one markedly short sentence per block,
 detail over evaluation, end once, order equals priorities. It also holds a
 revision discipline section that protects a draft from the other rules. Those
 came out of editing texts that passed every word check and still read as

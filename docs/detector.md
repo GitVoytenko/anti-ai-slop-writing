@@ -71,13 +71,15 @@ both do.
 | --- | --- |
 | `em-dash` | EN only: more than one per 500 words |
 | `rhetorical-dash` | RU/UK: more than one per 500 words, **grammatical тире excluded** |
-| `not-just-construction` | «X — это не просто Y» and its English and Ukrainian twins |
+| `not-just-construction` | «X – это не просто Y» and its English and Ukrainian twins |
 | `exclamation` | more than one per 1000 words |
 | `ellipsis` | more than one per piece |
 
-The dash rules are the ones worth reading twice. In English the em dash is
-rationed outright. In Russian and Ukrainian a dash is counted only when it is
-not doing grammatical work: a dash near the head of its clause («Киев —
+The dash rules are the ones worth reading twice. The detector matches an em
+dash or an en dash the same way, since this skill's own output always uses
+the en dash. In English a dash is rationed outright. In Russian and Ukrainian
+a dash is counted only when it is not doing grammatical work: a dash near the
+head of its clause («Киев –
 столица») or one followed by a copula word («…без интернета, это четыре
 часа») is free, and only the leftover rhetorical pauses are budgeted.
 

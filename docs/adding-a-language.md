@@ -27,7 +27,7 @@ the position of the verb. Write down what a non-native rule would break.
 
 `banned.md` needs three `##` sections: vocabulary, phrases, openers. The parser
 finds them by keyword in the heading, so a heading in your own language works as
-long as it contains the local word for "vocabulary", "phrases" or "openers" —
+long as it contains the local word for "vocabulary", "phrases" or "openers" –
 otherwise add the keyword to `SECTION_KINDS` in
 `detector/lib/parse-banned.js`.
 
@@ -42,7 +42,7 @@ vocabulary, and the note under the excerpt should say so.
 One line in the language list under step 0:
 
 ```markdown
-- German → `references/de/` — [rules.md](references/de/rules.md), [banned.md](references/de/banned.md), [patterns.md](references/de/patterns.md)
+- German → `references/de/` – [rules.md](references/de/rules.md), [banned.md](references/de/banned.md), [patterns.md](references/de/patterns.md)
 ```
 
 That is the whole skill-side change. `npm run lint:skill` checks that the links

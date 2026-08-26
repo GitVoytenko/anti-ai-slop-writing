@@ -1,4 +1,4 @@
-# English — module 2: rewrite patterns (before → after)
+# English – module 2: rewrite patterns (before → after)
 
 Standalone module: edit independently of rules.md and banned.md. Sourced from Wikipedia's "Signs of AI writing" (WikiProject AI Cleanup).
 
