@@ -39,7 +39,9 @@ function collect(target) {
 const files = TARGETS.flatMap(collect).sort();
 const results = files.map((file) => ({
   name: relative(ROOT, file),
-  result: detect(readFileSync(file, 'utf8')),
+  // Low-severity findings are contextual review hints. The repository gate
+  // enforces only medium and high issues so intentional style does not fail CI.
+  result: detect(readFileSync(file, 'utf8'), { severity: 'medium' }),
 }));
 
 const total = results.reduce((sum, r) => sum + r.result.issues.length, 0);
@@ -96,11 +98,13 @@ const proof = `# Self-scan
 
 <!-- budget: ${total} -->
 
-The detector run against this repository's own documentation. Regenerate with
+The detector run against this repository's own documentation at medium severity
+or higher. Regenerate with
 \`npm run self-scan\`; CI runs \`node scripts/self-scan.js --check\` and fails if
 the count climbs above the budget recorded above.
 
-Excluded by design: \`references/*/banned.md\` (a list of banned words) and
+Low-severity review hints are not a CI gate. Excluded by design:
+\`references/*/banned.md\` (a list of banned words) and
 \`references/*/patterns.md\` (each entry quotes the bad version before the good
 one). Linting those would measure the wrong thing.
 

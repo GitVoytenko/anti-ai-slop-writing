@@ -1,7 +1,7 @@
 {
   "name": "anti-ai-slop-writing",
-  "version": "2.4.0",
-  "description": "A Claude skill that writes human-sounding English, Russian and Ukrainian, plus a zero-dependency detector for AI writing patterns",
+  "version": "3.0.0",
+  "description": "A cross-agent skill for natural English, Russian and Ukrainian prose, plus a zero-dependency detector for generic writing patterns",
   "type": "module",
   "license": "MIT",
   "author": "Dmitrii Voitenko",
@@ -18,6 +18,8 @@
     "claude",
     "claude-code",
     "claude-skill",
+    "codex",
+    "agent-skills",
     "writing",
     "linter",
     "russian",

@@ -1,11 +1,9 @@
 /**
  * Punctuation budgets.
  *
- * The dash rule is where a naive port would go wrong. In English the em dash is
- * the most cited AI tell, so it gets a hard budget. In Russian and Ukrainian
- * тире is required grammar — «Киев — столица» is simply correct — so only two
- * things count: rhetorical inserted dashes above a rate, and the «X — это не
- * просто Y» construction. references/<lang>/rules.md states this outright.
+ * Punctuation frequency is a review hint, not an authorship test. Russian and
+ * Ukrainian also require grammatical тире, so only rhetorical inserted dashes
+ * count against the heuristic budget there.
  */
 
 import { splitSentences, wordCount } from '../lib/tokenize.js';
@@ -48,14 +46,18 @@ export function punctuation(text, { lang }) {
   // 1. em dashes
   if (lang === 'en') {
     const budget = Math.max(1, Math.floor(total / EM_DASH_PER_WORDS));
-    const hits = [...text.matchAll(/[—–]/gu)];
+    const hits = [...text.matchAll(/[—–]/gu)].filter((m) => {
+      const before = text[m.index - 1] ?? '';
+      const after = text[m.index + 1] ?? '';
+      return !(m[0] === '–' && /\d/.test(before) && /\d/.test(after));
+    });
     hits.slice(budget).forEach((m) => {
       findings.push({
         rule: 'em-dash',
-        severity: 'high',
+        severity: 'low',
         start: m.index,
         end: m.index + m[0].length,
-        message: `em dash over budget (${hits.length} in ${total} words, limit ${budget}) — the top English AI tell`,
+        message: `dash frequency over review threshold (${hits.length} in ${total} words, threshold ${budget})`,
       });
     });
   } else {
@@ -73,10 +75,10 @@ export function punctuation(text, { lang }) {
     rhetorical.slice(budget).forEach((hit) => {
       findings.push({
         rule: 'rhetorical-dash',
-        severity: 'medium',
+        severity: 'low',
         start: hit.start,
         end: hit.end,
-        message: `rhetorical dash over budget (${rhetorical.length} in ${total} words, limit ${budget}) — grammatical тире is free, dramatic pauses are not`,
+        message: `rhetorical dash frequency over review threshold (${rhetorical.length} in ${total} words, threshold ${budget}); grammatical тире is excluded`,
       });
     });
   }
@@ -103,10 +105,10 @@ export function punctuation(text, { lang }) {
   bangs.slice(bangBudget).forEach((m) => {
     findings.push({
       rule: 'exclamation',
-      severity: 'medium',
+      severity: 'low',
       start: m.index,
       end: m.index + 1,
-      message: `exclamation marks over budget (${bangs.length} in ${total} words, limit ${bangBudget}) — enthusiasm comes from word choice`,
+      message: `exclamation-mark frequency over review threshold (${bangs.length} in ${total} words, threshold ${bangBudget})`,
     });
   });
 

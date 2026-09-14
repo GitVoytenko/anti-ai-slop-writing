@@ -8,6 +8,25 @@ if they drift.
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-09-14
+
+### Changed
+
+- Rebuilt the skill around a fast default pass. A routine task now loads
+  `SKILL.md` and one short language module instead of the core craft guide,
+  banned list and rewrite catalog on every invocation.
+- Replaced absolute punctuation, sentence-length and list rules with contextual
+  checks. A pattern now matters when it is empty, repeated, out of register or
+  clustered with other generic habits.
+- Added explicit generate, rewrite, audit, embedded and file behavior while
+  keeping the default output to the finished prose only.
+- Made author voice and source preservation the first constraints. The skill
+  no longer invents anecdotes, opinions, slang, roughness or facts to perform a
+  stock "human" voice.
+- Reframed detector output as review evidence rather than proof of authorship.
+  The full craft audit is now an optional module for long-form and explicit
+  audit work.
+
 ### Fixed
 
 - Documentation pointed at `npx aislop`, which resolves to an unrelated package
@@ -78,5 +97,6 @@ number continues that history rather than restarting at 1.0.0.
 - Test fixtures in both directions: slop the detector must catch, and ordinary
   human writing it must leave alone.
 
-[Unreleased]: https://github.com/GitVoytenko/anti-ai-slop-writing/compare/v2.4.0...HEAD
+[Unreleased]: https://github.com/GitVoytenko/anti-ai-slop-writing/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/GitVoytenko/anti-ai-slop-writing/compare/v2.4.0...v3.0.0
 [2.4.0]: https://github.com/GitVoytenko/anti-ai-slop-writing/releases/tag/v2.4.0

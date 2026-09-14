@@ -3,27 +3,27 @@
 A fourth language is five files and one routing line. Nothing in the existing
 modules changes.
 
-The order below matters: write the language modules first and get the skill
-working, then teach the detector. The skill is useful without the linter; the
+The order below matters: write the short runtime module first, then add the
+detector sources and fixtures. The skill is useful without the linter; the
 linter is useless without good lists.
 
 ## 1. Create the modules
 
 ```
-references/<lang>/rules.md      grammar-level tells specific to this language
-references/<lang>/banned.md     vocabulary, phrases, openers
-references/<lang>/patterns.md   before/after pairs + a public-domain human exemplar
+references/<lang>/rules.md      compact runtime guidance for this language
+references/<lang>/banned.md     detector vocabulary, phrases and openers
+references/<lang>/patterns.md   examples, maintenance notes and sources
 ```
 
 Copy the structure from an existing language rather than the content. The
 Russian and Ukrainian files are the better template for an inflected language;
 the English one for an analytic language.
 
-`rules.md` is where you contradict `SKILL.md` on purpose. It overrides the
-general rules where the language demands it, and every language has at least one
-such rule. English rations the em dash; Russian and Ukrainian cannot, because
-тире is required grammar. German would need something about compound nouns and
-the position of the verb. Write down what a non-native rule would break.
+`rules.md` is the only language file loaded for routine writing. Keep it short.
+Record the few language-specific choices that change the output: register,
+grammar, translation contamination and the most common generic constructions.
+Do not copy punctuation bans across languages. German, for example, would need
+guidance on compound nouns and verb position rather than an English dash rule.
 
 `banned.md` needs three `##` sections: vocabulary, phrases, openers. The parser
 finds them by keyword in the heading, so a heading in your own language works as
@@ -31,22 +31,20 @@ long as it contains the local word for "vocabulary", "phrases" or "openers" –
 otherwise add the keyword to `SECTION_KINDS` in
 `detector/lib/parse-banned.js`.
 
-`patterns.md` ends with a public-domain human exemplar, and the choice is worth
-some thought. It should be a real text by a real writer whose rhythm the model
-can compare itself against: Chekhov's 1886 letter for Russian, Lesya Ukrainka's
-1907 letter for Ukrainian. Old is fine. The point is the uneven pacing, not the
-vocabulary, and the note under the excerpt should say so.
+`patterns.md` gives maintainers concrete before/after cases and records the
+sources behind the language port. A public-domain exemplar is useful when it
+demonstrates a language-specific rhythm, but it is not loaded on routine tasks.
 
 ## 2. Route it in `SKILL.md`
 
-One line in the language list under step 0:
+One line in the language-routing list:
 
 ```markdown
-- German → `references/de/` – [rules.md](references/de/rules.md), [banned.md](references/de/banned.md), [patterns.md](references/de/patterns.md)
+- German: [references/de/rules.md](references/de/rules.md)
 ```
 
-That is the whole skill-side change. `npm run lint:skill` checks that the links
-resolve.
+That is the whole runtime change. `npm run lint:skill` checks that the link
+resolves; the detector still discovers `banned.md` through its language list.
 
 ## 3. Add fixtures
 

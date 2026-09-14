@@ -52,7 +52,8 @@ Severity comes from the list itself. A bare entry is `high`. An entry is
 `medium` when it carries a replacement (`данный (→ этот)`) or narrows the word
 to one exact form (`эпоха («в эпоху»)`), and `low` when it states a condition
 the tool cannot check, as `landscape (figurative)` and `ключевой (как филлер)`
-both do.
+both do. Severity describes confidence in the mechanical match, not confidence
+about authorship and not an instruction to rewrite the phrase automatically.
 
 ### Structural
 
@@ -69,19 +70,18 @@ both do.
 
 | Rule | Threshold |
 | --- | --- |
-| `em-dash` | EN only: more than one per 500 words |
+| `em-dash` | EN only: more than one per 500 words; numeric en-dash ranges excluded |
 | `rhetorical-dash` | RU/UK: more than one per 500 words, **grammatical тире excluded** |
 | `not-just-construction` | «X – это не просто Y» and its English and Ukrainian twins |
 | `exclamation` | more than one per 1000 words |
 | `ellipsis` | more than one per piece |
 
-The dash rules are the ones worth reading twice. The detector matches an em
-dash or an en dash the same way, since this skill's own output always uses
-the en dash. In English a dash is rationed outright. In Russian and Ukrainian
-a dash is counted only when it is not doing grammatical work: a dash near the
-head of its clause («Киев –
-столица») or one followed by a copula word («…без интернета, это четыре
-часа») is free, and only the leftover rhetorical pauses are budgeted.
+The detector matches an em dash or an en dash the same way. In English it
+reports repeated dashes above the heuristic threshold. In Russian and
+Ukrainian it counts only dashes that appear not to be doing grammatical work: a
+dash near the head of its clause («Киев – столица») or one followed by a copula
+word («…без интернета – это четыре часа») is excluded. The remaining matches
+still require editorial judgment.
 
 ### Formatting
 
@@ -129,8 +129,8 @@ Tells" is about the first word of a chat reply, not of a document, and
 "Era-Specific AI Vocabulary" is historical context whose live entries already
 appear in the main list.
 
-**The craft rules are out of reach.** Whether a scene beats its summary, whether
-the painful number sits in a main clause, whether the piece ends once: those
-live in `references/core/craft.md`, they decide whether a text reads as human,
-and no regular expression can check them. A clean detector run means the
-mechanical layer is clean. It does not mean the writing is good.
+**The craft rules are out of reach.** Whether a scene beats its summary, a
+contrast is necessary or an edit erased the author's voice requires context.
+Those decisions live in `SKILL.md` and `references/core/craft.md`; no regular
+expression can check them. A clean detector run only means the mechanical layer
+is clean. It does not mean the writing is good.

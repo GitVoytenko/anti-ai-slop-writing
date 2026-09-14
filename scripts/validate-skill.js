@@ -15,12 +15,15 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LANGUAGES = ['en', 'ru', 'uk'];
 const MODULES = ['rules.md', 'banned.md', 'patterns.md'];
 const DESCRIPTION_LIMIT = 1024;
+const DEFAULT_PROMPT_WORD_LIMIT = 850;
+const DEEP_AUDIT_WORD_LIMIT = 450;
 
 const problems = [];
 const notes = [];
 
 const fail = (message) => problems.push(message);
 const note = (message) => notes.push(message);
+const wordCount = (text) => text.trim().split(/\s+/u).filter(Boolean).length;
 
 function readFrontmatter(text) {
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -98,7 +101,31 @@ for (const lang of LANGUAGES) {
 const core = join(ROOT, 'references', 'core', 'craft.md');
 if (!existsSync(core)) fail('missing references/core/craft.md');
 
-// 5. the banned lists still parse into something usable
+// 5. prompt-size budgets: routine work loads SKILL.md plus one rules module;
+// the deep audit is conditional and has its own ceiling.
+if (existsSync(skillPath)) {
+  const skillWords = wordCount(readFileSync(skillPath, 'utf8'));
+  for (const lang of LANGUAGES) {
+    const rules = join(ROOT, 'references', lang, 'rules.md');
+    if (!existsSync(rules)) continue;
+    const loaded = skillWords + wordCount(readFileSync(rules, 'utf8'));
+    if (loaded > DEFAULT_PROMPT_WORD_LIMIT) {
+      fail(`${lang}: default prompt is ${loaded} words, limit is ${DEFAULT_PROMPT_WORD_LIMIT}`);
+    } else {
+      note(`${lang}: default prompt ${loaded}/${DEFAULT_PROMPT_WORD_LIMIT} words`);
+    }
+  }
+}
+if (existsSync(core)) {
+  const deepWords = wordCount(readFileSync(core, 'utf8'));
+  if (deepWords > DEEP_AUDIT_WORD_LIMIT) {
+    fail(`deep audit is ${deepWords} words, limit is ${DEEP_AUDIT_WORD_LIMIT}`);
+  } else {
+    note(`deep audit ${deepWords}/${DEEP_AUDIT_WORD_LIMIT} words`);
+  }
+}
+
+// 6. the banned lists still parse into something usable
 const { parseBanned } = await import('../detector/lib/parse-banned.js');
 for (const lang of LANGUAGES) {
   const path = join(ROOT, 'references', lang, 'banned.md');
@@ -112,7 +139,7 @@ for (const lang of LANGUAGES) {
   else note(`${lang}: ${entries.length} banned entries`);
 }
 
-// 6. numbers quoted in the documentation still match the files
+// 7. numbers quoted in the documentation still match the files
 const counts = {};
 for (const lang of LANGUAGES) {
   const path = join(ROOT, 'references', lang, 'banned.md');
@@ -164,7 +191,7 @@ if (existsSync(readmePath)) {
   note('README counts match the reference files');
 }
 
-// 7. relative links resolve in every document, and nothing points at the npm
+// 8. relative links resolve in every document, and nothing points at the npm
 // package `aislop`, which belongs to someone else
 const DOCS = ['README.md', 'CONTRIBUTING.md', 'CHANGELOG.md', 'docs/architecture.md', 'docs/detector.md', 'docs/adding-a-language.md'];
 for (const doc of DOCS) {

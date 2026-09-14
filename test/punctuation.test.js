@@ -51,4 +51,5 @@ test('a second ellipsis is flagged', () => {
 
 test('number ranges are not dashes', () => {
   assert.equal(rules('Встреча длилась 5—7 минут, не больше.', { lang: 'ru' }).includes('rhetorical-dash'), false);
+  assert.equal(rules('The migration took 5–7 minutes.', { lang: 'en' }).includes('em-dash'), false);
 });

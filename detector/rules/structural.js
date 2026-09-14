@@ -2,8 +2,8 @@
  * Structure, not vocabulary. These are the tells that survive a clean word
  * list: even sentence lengths, groups of three, chains of short declaratives.
  *
- * SKILL.md calls uniform sentence length "the single most measurable AI
- * detection signal", so it gets the harshest treatment here.
+ * These rules surface repeated shapes for review. None of them proves
+ * authorship, and a single hit may be intentional in its genre.
  */
 
 import { splitSentences, splitBlocks, wordCount } from '../lib/tokenize.js';
@@ -88,10 +88,10 @@ export function structural(text, { lang }) {
     if (mean > 0 && sd / mean < 0.4) {
       findings.push({
         rule: 'flat-rhythm',
-        severity: 'medium',
+        severity: 'low',
         start: sentences[0].start,
         end: sentences[0].end,
-        message: `sentence lengths barely vary (mean ${mean.toFixed(1)} words, sd ${sd.toFixed(1)}) — human writing is uneven`,
+        message: `sentence lengths barely vary (mean ${mean.toFixed(1)} words, sd ${sd.toFixed(1)}) — review whether the rhythm is mechanically flat`,
       });
     }
   }
@@ -111,7 +111,7 @@ export function structural(text, { lang }) {
           severity: 'low',
           start: sentence.start + m.index,
           end: sentence.start + m.index + m[0].length,
-          message: 'group of three — use two, four, or one unless the content really has three items',
+          message: 'group of three — keep it when the content genuinely has three items; review repeated triads',
         });
       }
     }
@@ -156,10 +156,10 @@ export function structural(text, { lang }) {
     if (group.length < SAME_LENGTH_RUN) return;
     out.push({
       rule: 'uniform-sentence-length',
-      severity: 'high',
+      severity: 'low',
       start: group[0].start,
       end: group[group.length - 1].end,
-      message: `${group.length} sentences in a row of ~${group[0].length} words — the strongest measurable AI signal`,
+      message: `${group.length} sentences in a row of ~${group[0].length} words — review whether the rhythm is intentionally even`,
     });
   }
 
@@ -167,10 +167,10 @@ export function structural(text, { lang }) {
     if (group.length < PARATAXIS_RUN) return;
     out.push({
       rule: 'parataxis',
-      severity: 'medium',
+      severity: 'low',
       start: group[0].start,
       end: group[group.length - 1].end,
-      message: `${group.length} short sentences in a row — connect the thoughts instead of stacking them`,
+      message: `${group.length} short sentences in a row — review whether the staccato rhythm serves the passage`,
     });
   }
 }
